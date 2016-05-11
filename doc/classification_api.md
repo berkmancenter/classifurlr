@@ -38,9 +38,9 @@ As per JSON API 1.0, the type attribute is required and must be the string 'clas
             "certificateChain": "",
             "screenshot": "data:image/png;base64,iVBOR...==",
             "request": {
-              "maxAge": 300,
               "timeout": 10,
-              "requestHeaders": "Accept: text/html\r\nAccept-Language: zh-Hans,zh\r\nUser-Agent: Mozilla/5.0 AppleWebKit/537 Chrome/41.0"
+              "requestHeaders": "Accept: text/html\r\nAccept-Language: zh-Hans,zh\r\nUser-Agent: Mozilla/5.0 AppleWebKit/537 Chrome/41.0",
+              "asn": "35273"
 
             }
           } ]
@@ -58,23 +58,29 @@ As per JSON API 1.0, the type attribute is required and must be the string 'clas
         "type": "classifications",
         "id": "1134",
         "attributes": {
-          "probability": 1.0,
-          "available": true,
-          "blocked": false,
-          "throttled": false,
+          "status": "up",
+          "available": 1.0,
+          "blocked": 0.0,
+          "throttled": 0.0,
           "classifiers": [ {
             "name": "status_code_classifier",
-            "probability": 1.0,
-            "available": true,
-            "blocked": false,
-            "throttled": false,
+            "available": 1.0,
             "weight": 1.0
+          }, {
+            "name": "block_page_classifier",
+            "available": 1.0,
+            "blocked": 0.0,
+            "weight": 1.0
+          }, {
+            "name": "timing_classifier",
+            "throttled": 0.0,
+            "weight": 0.5
           } ]
         }
       }
     }
 
-### classification attributes
+### classification request attributes
 
 **url**
 
@@ -92,7 +98,7 @@ An array of response data returned to the original request. There must be at lea
 
 Data about the original request related to the response data.
 
-### response attributes
+#### response attributes
 
 **statusCode**
 
@@ -122,6 +128,41 @@ Data URI of an image of the rendered response, if available.
 
 Data about the request original request to which this data is a response.
 
-### request attributes
+#### request attributes
+
+**timeout**
+
+The time, in seconds, after which the request will be canceled by the original machine.
+
+**requestHeaders**
+
+The HTTP headers sent as part of the original request. Each header should be separated by CRLF as defined by HTTP.
+
+**asn**
+
+The Autonomous System Number for the ISP to which the original requesting machine is connected.
+
+### classification response attributes
+
+**status**
+
+The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, blocked, undetermined.
+
+**available**
+
+The probability, represented as a number from 0 to 1, that the given page is available to users in the given country as determined by weighting the results from individual classifiers.
+
+**blocked**
+
+The probability, represented as a number from 0 to 1, that the given page is being blocked by some entity on the network as determined by weighting the results from individual classifiers.
+
+
+Provide feedback for a classification
+-------------------------------------
+
+**id**
+
+The ID of the classification. Can be used to provide feedback after further analysis or human interpretation.
+
 
 
