@@ -40,7 +40,7 @@ As per JSON API 1.0, the type attribute is required and must be the string 'clas
             "request": {
               "timeout": 10,
               "requestHeaders": "Accept: text/html\r\nAccept-Language: zh-Hans,zh\r\nUser-Agent: Mozilla/5.0 AppleWebKit/537 Chrome/41.0",
-              "asn": "35273"
+              "asn": "23650"
 
             }
           } ]
@@ -88,7 +88,11 @@ The URL to which the given request and response data applies.
 
 **countryCode**
 
-The ISO2 code for the country whence the request originated. This metadata may be useful to some classifiers, for example, comparing to known block pages or block page IPs.
+The ISO2 code for the country from which you are interested if the URL is available. The country must have some relation to the request/response data submitted. For example, if you submit data pertaining to a request from China, the classifiers will not be able to answer if the URL is available from Ireland.
+
+However, if the responses array contains data on many requests from different ASNs in Ireland, the classifiers may be able to generalize availability in Ireland, e.g., if the URL is not available on one of many ASNs in Ireland, there is a high but not perfect probability that the URL is be available from any one location within the country.
+
+This attribute is not required and, if omitted, the classifiers will report on the raw request/response data as if you asked if the URL was available from the specific ASN of the request of the first response in the responses array.
 
 **responses**
 
