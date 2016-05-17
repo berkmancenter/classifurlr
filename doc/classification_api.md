@@ -88,11 +88,7 @@ The URL to which the given request and response data applies.
 
 **countryCode**
 
-The ISO2 code for the country from which you are interested if the URL is available. The country must have some relation to the request/response data submitted. For example, if you submit data pertaining to a request from China, the classifiers will not be able to answer if the URL is available from Ireland.
-
-However, if the responses array contains data on many requests from different ASNs in Ireland, the classifiers may be able to generalize availability in Ireland, e.g., if the URL is not available on one of many ASNs in Ireland, there is a high but not perfect probability that the URL is be available from any one location within the country.
-
-This attribute is not required and, if omitted, the classifiers will report on the raw request/response data as if you asked if the URL was available from the specific ASN of the request of the first response in the responses array.
+The ISO2 code for the country from which the requets were made.
 
 **responses**
 
@@ -100,7 +96,7 @@ An array of response data returned to the original request. There must be at lea
 
 **responses[x].request**
 
-Data about the original request related to the response data.
+Data about the original request related to each individual response.
 
 #### response attributes
 
@@ -148,6 +144,10 @@ The Autonomous System Number for the ISP to which the original requesting machin
 
 ### classification response attributes
 
+**id**
+
+The ID of the classification. Set by Classifurlr, it Can be used to provide feedback after further analysis or human interpretation.
+
 **status**
 
 The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, blocked, undetermined.
@@ -161,12 +161,20 @@ The probability, represented as a number from 0 to 1, that the given page is ava
 The probability, represented as a number from 0 to 1, that the given page is being blocked by some entity on the network as determined by weighting the results from individual classifiers.
 
 
+**throttled**
+
+The probability, represented as a number from 0 to 1, that the given page is being throttled by some entity on the network as determined by weighting the results from individual classifiers.
+
+**classifiers**
+
+An array of results, one from each classifier queried, which help determine the final classification response.
+
+An individual classifier result will have a name and a weight. These are set by Classifurlr and used to classify a web response. Each classifier result will also have one or more of the probabilities (available, blocked, &/or throttled). 
+
+Classifurlr uses the weight and probabilities together to determine the overall probabilities for the classification. 
+
 Provide feedback for a classification
 -------------------------------------
-
-**id**
-
-The ID of the classification. Can be used to provide feedback after further analysis or human interpretation.
 
 
 
