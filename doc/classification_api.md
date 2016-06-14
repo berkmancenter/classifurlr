@@ -29,11 +29,19 @@ As per JSON API 1.0, the type attribute is required and must be the string 'clas
         "type": "classifications",
         "attributes": {
           "url": "http://cyber.law.harvard.edu",
-          "countryCode": "CN",
           "responses": [ {
             "statusCode": 200,
             "rawResults": "<!DOCTYPE html><html><head><title>Berkman Center for Internet and society</title></head><body>...</body></html>",
-            "timing": "483ms",
+            "timings": {
+               "blocked": 0,
+               "dns": -1,
+               "connect": 15,
+               "send": 20,
+               "wait": 38,
+               "receive": 12,
+               "ssl": -1,
+               "comment": ""
+            },
             "errorsEncountered": "",
             "certificateChain": "",
             "screenshot": "data:image/png;base64,iVBOR...==",
@@ -86,10 +94,6 @@ As per JSON API 1.0, the type attribute is required and must be the string 'clas
 
 The URL to which the given request and response data applies.
 
-**countryCode**
-
-The ISO2 code for the country from which the requets were made.
-
 **responses**
 
 An array of response data returned to the original request. There must be at least one but historic data can also be sent and may be useful to some classifiers.
@@ -108,9 +112,22 @@ HTTP status code returned in the response.
 
 Full HTML of response.
 
-**timing**
+**timings**
 
-Time it took for the reponse to return data to the machine issuing the original request.
+This object describes various phases within request-response round trip. All times are specified in milliseconds.
+
+Please follow the timings format in the HAR spec: http://www.softwareishard.com/blog/har-12-spec/#timings
+
+Possible attributes for the timings object include:
+
+* blocked
+* dns
+* connect
+* send
+* wait
+* receive
+* ssl
+* comment
 
 **errorsEncountered**
 
@@ -154,7 +171,7 @@ The status of the request/response data as determined by the classifications. Th
 
 **available**
 
-The probability, represented as a number from 0 to 1, that the given page is available to users in the given country as determined by weighting the results from individual classifiers.
+The probability, represented as a number from 0 to 1, that the given page is available to users connecting via the given ASN as determined by weighting the results from individual classifiers.
 
 **blocked**
 
