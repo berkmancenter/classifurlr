@@ -69,20 +69,15 @@ As per JSON API 1.0, the type attribute is required and must be the string 'clas
           "status": "up",
           "available": 1.0,
           "blocked": 0.0,
-          "throttled": 0.0,
           "classifiers": [ {
             "name": "status_code_classifier",
             "available": 1.0,
-            "weight": 1.0
+            "weight": 0.6
           }, {
             "name": "block_page_classifier",
             "available": 1.0,
             "blocked": 0.0,
             "weight": 1.0
-          }, {
-            "name": "timing_classifier",
-            "throttled": 0.0,
-            "weight": 0.5
           } ]
         }
       }
@@ -178,15 +173,11 @@ The probability, represented as a number from 0 to 1, that the given page is ava
 The probability, represented as a number from 0 to 1, that the given page is being blocked by some entity on the network as determined by weighting the results from individual classifiers.
 
 
-**throttled**
-
-The probability, represented as a number from 0 to 1, that the given page is being throttled by some entity on the network as determined by weighting the results from individual classifiers.
-
 **classifiers**
 
 An array of results, one from each classifier queried, which help determine the final classification response.
 
-An individual classifier result will have a name and a weight. These are set by Classifurlr and used to classify a web response. Each classifier result will also have one or more of the probabilities (available, blocked, &/or throttled). 
+An individual classifier result will have a name and a weight. These are set by Classifurlr and used to classify a web response. Each classifier result will also have one or more of the probabilities (available &/or blocked).
 
 Classifurlr uses the weight and probabilities together to determine the overall probabilities for the classification. 
 
