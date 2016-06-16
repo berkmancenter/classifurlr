@@ -181,6 +181,45 @@ An individual classifier result will have a name and a weight. These are set by 
 
 Classifurlr uses the weight and probabilities together to determine the overall probabilities for the classification. 
 
+Classifiers and custom weights
+------------------------------
+
+Send a GET request to /classifiers for a list of all classifiers in the system.
+
+### Example
+
+#### HTTP request
+
+    GET /classifiers HTTP/1.1
+
+#### HTTP response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/vnd.api+json
+
+    {
+      "data": {
+        "type": "classifications",
+        "id": "1134",
+        "attributes": {
+          "status": "up",
+          "available": 1.0,
+          "blocked": 0.0,
+          "classifiers": [ {
+            "name": "status_code_classifier",
+            "available": 1.0,
+            "weight": 0.6
+          }, {
+            "name": "block_page_classifier",
+            "available": 1.0,
+            "blocked": 0.0,
+            "weight": 1.0
+          } ]
+        }
+      }
+    }
+
+
 Provide feedback for a classification
 -------------------------------------
 
