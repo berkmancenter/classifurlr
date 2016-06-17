@@ -158,7 +158,7 @@ The Autonomous System Number for the ISP to which the original requesting machin
 
 **id**
 
-The ID of the classification. Set by Classifurlr, it Can be used to provide feedback after further analysis or human interpretation.
+The ID of the classification. Set by Classifurlr, it can be used to provide feedback after further analysis or human interpretation.
 
 **status**
 
@@ -198,27 +198,36 @@ Send a GET request to /classifiers for a list of all classifiers in the system.
     Content-Type: application/vnd.api+json
 
     {
-      "data": {
-        "type": "classifications",
-        "id": "1134",
-        "attributes": {
-          "status": "up",
-          "available": 1.0,
-          "blocked": 0.0,
-          "classifiers": [ {
-            "name": "status_code_classifier",
-            "available": 1.0,
-            "weight": 0.6
-          }, {
-            "name": "block_page_classifier",
-            "available": 1.0,
-            "blocked": 0.0,
-            "weight": 1.0
-          } ]
-        }
-      }
+      "data": [ {
+        "id": "1",
+        "name": "status_code_classifier",
+        "classifies": [ 'available' ],
+        "defaultWeight": 0.6
+      }, {
+        "id": "1",
+        "name": "block_page_classifier",
+        "classifies": [ 'available', 'blocked' ],
+        "defaultWeight": 1.0
+      } ]
     }
 
+### classifier response attributes
+
+**id**
+
+The ID of the classifier. 
+
+**name**
+
+The name of the classifier. Set by Classifurlr, it can be used to reference a specific classifier by name when providing custom weights or feedback.
+
+**classifies**
+
+An array of censorship types this classifier will attempt to determine from the request data. This also relates to which attributes the given classifier will return in a request to /classify.
+
+**defaultWeight**
+
+The default weight given to this classifier. It can be overridden in requests to /classify (see below).
 
 Provide feedback for a classification
 -------------------------------------
