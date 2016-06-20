@@ -181,8 +181,8 @@ An individual classifier result will have a name and a weight. These are set by 
 
 Classifurlr uses the weight and probabilities together to determine the overall probabilities for the classification. 
 
-Classifiers and custom weights
-------------------------------
+Query for Classifiers
+---------------------
 
 Send a GET request to /classifiers for a list of all classifiers in the system.
 
@@ -202,12 +202,12 @@ Send a GET request to /classifiers for a list of all classifiers in the system.
         "id": "1",
         "name": "status_code_classifier",
         "classifies": [ 'available' ],
-        "defaultWeight": 0.6
+        "weight": 0.6
       }, {
         "id": "1",
         "name": "block_page_classifier",
         "classifies": [ 'available', 'blocked' ],
-        "defaultWeight": 1.0
+        "weight": 1.0
       } ]
     }
 
@@ -225,12 +225,70 @@ The name of the classifier. Set by Classifurlr, it can be used to reference a sp
 
 An array of censorship types this classifier will attempt to determine from the request data. This also relates to which attributes the given classifier will return in a request to /classify.
 
-**defaultWeight**
+**weight**
 
 The default weight given to this classifier. It can be overridden in requests to /classify (see below).
 
-Provide feedback for a classification
--------------------------------------
+Custom weights
+--------------
+
+When making a request to /classify, you can override the default weight on any classifier by using the classifiers attribute. The classifiers attribute is an array of objects having a classifier name weight. The weight you provide will override the default weight of the given classifier.
+
+In the following example, the request to /classify is, in effect, turning off the block_page_classifier by setting its weight to 0.0. Even though the page is clearly a block page, the classified result is that it is available and not blocked.
+
+### Example
+
+#### HTTP request
+
+    POST /classify HTTP/1.1
+    Content-Type: application/x-www-form-urlencoded
+    Accept: application/vnd.api+json
+    
+    {
+      "data": {
+        "type": "classifications",
+        "attributes": {
+          "url": "http://cyber.law.harvard.edu",
+          "responses": [ {
+            . . .
+          } ],
+          "classifiers": [ {
+            "name": "status_code_classifier",
+            "weight": 1.0
+          }, {
+            "name": "block_page_classifier",
+            "weight": 0.0
+          } ]
+        }
+      }
+    }
+
+#### HTTP response
+
+    HTTP/1.1 200 OK
+    Content-Type: application/vnd.api+json
+
+    {
+      "data": {
+        "type": "classifications",
+        "id": "1134",
+        "attributes": {
+          "status": "up",
+          "available": 1.0,
+          "blocked": 0.0,
+          "classifiers": [ {
+            "name": "status_code_classifier",
+            "available": 1.0,
+            "weight": 1.0
+          }, {
+            "name": "block_page_classifier",
+            "available": 0.0,
+            "blocked": 1.0,
+            "weight": 0.0
+          } ]
+        }
+      }
+    }
 
 
 
