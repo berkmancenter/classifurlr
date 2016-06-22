@@ -10,11 +10,11 @@ This API (mostly) adheres to the JSON API 1.0 specification: http://jsonapi.org/
 Query for classification
 ------------------------
 
-Send POST requests to /classify to let us know that you would like a classification of a URL transaction. Send as much data as you have (including historic data) because each classification module will use what it can.
+Send POST requests to /classify to let us know that you would like a classification of one or more transaction with a URL. Send as much data as you have (including historic data) because each classification module will use what it can.
 
 POSTs to /classify should have the Content-Type application/vnd.api+json.
 
-As per JSON API 1.0, the type attribute is required and must be the string 'classifications'.
+As per JSON API 1.0, the type attribute is required and must be the string 'transactions'.
 
 ### Example
 
@@ -26,7 +26,7 @@ As per JSON API 1.0, the type attribute is required and must be the string 'clas
     
     {
       "data": {
-        "type": "classifications",
+        "type": "transactions",
         "attributes": {
           "url": "http://cyber.law.harvard.edu",
           "responses": [ {
