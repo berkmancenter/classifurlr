@@ -190,9 +190,9 @@ DEPENDENCIES
   bootstrap-sass
   byebug
   capybara
-  nokogiri
   factory_girl_rails
   jquery-rails
+  nokogiri
   pg
   poltergeist
   rails (= 4.2.3)
