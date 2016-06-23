@@ -13,7 +13,7 @@ Capybara.current_driver = :poltergeist
 
 RSpec.configure do |config|
   # Capybara 
-  config.include Capybara::DSL
+  #config.include Capybara::DSL
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

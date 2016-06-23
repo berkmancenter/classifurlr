@@ -34,10 +34,12 @@ group :development, :test do
   gem 'rake' # required for Travis CI
 end
 
-group :test do
+group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
+end
 
+group :test do
   gem 'rspec-rails'
   gem 'capybara'
   gem 'poltergeist'
