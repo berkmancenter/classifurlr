@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+
+  get 'classifications/:id' => 'classifications#show'
+  post 'classify' => 'classifications#create', as: :classify
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
