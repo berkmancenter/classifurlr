@@ -201,12 +201,12 @@ Send a GET request to /classifiers for a list of all classifiers in the system.
       "data": [ {
         "id": "1",
         "name": "status_code_classifier",
-        "classifies": [ 'available' ],
+        "classifies": "available",
         "weight": 0.6
       }, {
         "id": "1",
         "name": "block_page_classifier",
-        "classifies": [ 'available', 'blocked' ],
+        "classifies": "available blocked",
         "weight": 1.0
       } ]
     }
@@ -223,7 +223,9 @@ The name of the classifier. Set by Classifurlr, it can be used to reference a sp
 
 **classifies**
 
-An array of censorship types this classifier will attempt to determine from the request data. This also relates to which attributes the given classifier will return in a request to /classify.
+An list of censorship types this classifier will attempt to determine from the request data. This also relates to which attributes the given classifier will return in a request to /classify.
+
+The list is a space-delimited string and one or more of the following words: available, blocked.
 
 **weight**
 

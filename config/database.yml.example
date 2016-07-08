@@ -20,10 +20,12 @@ default: &default
   # For details on connection pooling, see rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: 5
+  username: postgres
+  password: postgres
 
 development:
   <<: *default
-  database: classifurlr_development
+  database: classifurlr_dev
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -80,6 +82,6 @@ test:
 #
 production:
   <<: *default
-  database: classifurlr_production
+  database: classifurlr_prod
   username: classifurlr
   password: <%= ENV['CLASSIFURLR_DATABASE_PASSWORD'] %>
