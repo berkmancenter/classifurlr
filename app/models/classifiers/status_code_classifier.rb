@@ -1,0 +1,2 @@
+class StatusCodeClassifier < Classifier
+end
