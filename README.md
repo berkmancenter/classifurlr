@@ -1,31 +1,33 @@
 classifurlr
 ===========
 
-Given request &amp; response data, attempts to determine likelihood that page is available vs. down or blocked.
+Given request and response data, attempts to determine likelihood that page is available vs. down or blocked.
 
 ruby version
 ------------
 
+ruby: 2.2.4
+rails: 4.2.3
+
 system dependencies
 -------------------
+
+* PostgreSQL
 
 configuration
 -------------
 
-database creation
------------------
-
-database initialization
------------------------
+    $ bundle install
+    $ cp config/database.yml.example config/database.yml (and edit)
+    $ cp config/secrets.yml.example config/secrets.yml (and edit)
+    $ rake db:setup
 
 how to run the test suite
 -------------------------
 
-services
---------
+    $ rake db:setup RAILS_ENV=test
+    $ bin/rspec spec
 
-(job queues, cache servers, search engines, etc.)
 
-deployment instructions
------------------------
+> Written with [StackEdit](https://stackedit.io/).
 
