@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe StatusCodeClassifier do
-  it { should respond_to( :name, :type, :weight ) }
+  it { should respond_to( :name, :type, :weight, :available, :block_page ) }
 
   it {
     expect( StatusCodeClassifier.new.type ).to eq( 'StatusCodeClassifier' )
@@ -12,7 +12,11 @@ RSpec.describe StatusCodeClassifier do
   }
 
   it {
-    expect( StatusCodeClassifier.create.weight ).to eq( 1.0 )
+    expect( StatusCodeClassifier.default_weight ).to eq( 0.8 )
+  }
+
+  it {
+    expect( StatusCodeClassifier.create.weight ).to eq( 0.8 )
   }
 
 #  describe 'classify' do
