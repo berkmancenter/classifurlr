@@ -16,7 +16,7 @@ POSTs to /classify should have the Content-Type: application/json.
 
 As per JSON API 1.0, the type attribute is required and must be the string 'transactions'.
 
-### Example
+### Basic Example
 
 #### HTTP request
 
@@ -31,6 +31,7 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
           "url": "http://cyber.law.harvard.edu",
           "responses": [ {
             "statusCode": 200,
+            "responseHeaders": "Cache-Control: public, max-age=3600\r\nContent-Type: text/html; charset=utf-8",
             "rawResults": "<!DOCTYPE html><html><head><title>Berkman Center for Internet and society</title></head><body>...</body></html>",
             "timings": {
                "blocked": 0,
@@ -46,6 +47,7 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
             "certificateChain": "",
             "screenshot": "data:image/png;base64,iVBOR...==",
             "request": {
+              "url": "http://cyber.law.harvard.edu",
               "timeout": 10,
               "requestHeaders": "Accept: text/html\r\nAccept-Language: zh-Hans,zh\r\nUser-Agent: Mozilla/5.0 AppleWebKit/537 Chrome/41.0",
               "asn": "23650"
@@ -102,6 +104,10 @@ Data about the original request related to each individual response.
 
 HTTP status code returned in the response.
 
+**responseHeaders**
+
+The HTTP headers sent as part of the response. Each header should be separated by CRLF as defined by HTTP.
+
 **rawResults**
 
 Full HTML of response.
@@ -141,6 +147,10 @@ Data about the request original request to which this data is a response.
 
 #### request attributes
 
+**url**
+
+For each request, you can include the url requested. This is useful to classifiers to determine/follow redirects and other anomolies.
+
 **timeout**
 
 The time, in seconds, after which the request will be canceled by the original machine.
@@ -178,6 +188,42 @@ An array of results, one from each classifier queried, which help determine the 
 An individual classifier result will have a name and a weight. These are set by Classifurlr and used to classify a web response. Each classifier result will also have one or more probabilities (available, blockPage, etc.).
 
 Classifurlr uses the individual weight and probabilities together to determine the overall probabilities for the classification. 
+
+### Redirect Example
+
+#### HTTP request
+
+    POST /classify HTTP/1.1
+    Content-Type: application/json
+    Accept: application/json
+    
+    {
+      "data": {
+        "type": "transactions",
+        "attributes": {
+          "url": "http://cyber.law.harvard.edu",
+          "responses": [ {
+            "statusCode": 301,
+            "responseHeaders": "Location: https://cyber.law.harvard.edu/",
+            "rawResults": "",
+            "request": {
+              "url": "http://cyber.law.harvard.edu",
+              "requestHeaders": "Accept: text/html\r\nAccept-Language: zh-Hans,zh\r\nUser-Agent: Mozilla/5.0 AppleWebKit/537 Chrome/41.0",
+              "asn": "23650"
+            }
+          }, {
+            "statusCode": 200,
+            "responseHeaders": "Content-Type:text/html",
+            "rawResults": "<!DOCTYPE html><html><head><title>Berkman Center for Internet and society</title></head><body>...</body></html>",
+            "request": {
+              "url": "https://cyber.law.harvard.edu/",
+              "requestHeaders": "Accept: text/html\r\nAccept-Language: zh-Hans,zh\r\nUser-Agent: Mozilla/5.0 AppleWebKit/537 Chrome/41.0",
+              "asn": "23650"
+            }
+          } ]
+        }
+      }
+    }
 
 Query for Classifiers
 ---------------------
