@@ -16,7 +16,7 @@ RSpec.describe 'classify' do
           }
         } ]
       }
-    }.to_json
+    }.as_json
   }
 
   it ( 'accepts requests to classify' ) {
@@ -27,11 +27,11 @@ RSpec.describe 'classify' do
 
     #classification = Classification.last
 
-    #puts "classification: #{classification.to_json}"
+    #puts "classification: #{classification.as_json}"
 
-    #expect( response.body ).to eq( { id: 6 }.to_json )
+    #expect( response.body ).to eq( { id: 6 }.as_json )
 
-    #expect( response.body ).to eq( { data: { type: 'classifications' } }.to_json )
+    #expect( response.body ).to eq( { data: { type: 'classifications' } }.as_json )
   }
 
   it ( 'creates a classification' ) {
