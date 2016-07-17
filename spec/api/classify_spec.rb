@@ -16,7 +16,7 @@ RSpec.describe 'classify' do
           }
         } ]
       }
-    }
+    }.to_json
   }
 
   it ( 'accepts requests to classify' ) {

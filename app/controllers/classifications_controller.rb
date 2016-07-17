@@ -4,6 +4,7 @@ class ClassificationsController < ApplicationController
   end
 
   def create
+    Rails.logger.info params[ :data ]
     @classifaction = Classification.new
 
     if @classifaction.save
