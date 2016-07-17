@@ -22,9 +22,9 @@ RSpec.describe StatusCodeClassifier do
   describe 'classify' do
     let ( :transaction_data ) {
       {
-        attributes: {
-          responses: [ {
-            statusCode: 0
+        'attributes' => {
+          'responses' => [ {
+            'statusCode' => 0
           } ]
         }
       }
@@ -32,7 +32,7 @@ RSpec.describe StatusCodeClassifier do
 
     context '200 response' do
       it {
-        transaction_data[ :attributes ][ :responses ][ 0 ][ :statusCode ] = 200
+        transaction_data[ 'attributes' ][ 'responses' ][ 0 ][ 'statusCode' ] = 200
         c = StatusCodeClassifier.classify( transaction_data )
 
         expect( c.name ).to eq( 'status_code_classifier' )

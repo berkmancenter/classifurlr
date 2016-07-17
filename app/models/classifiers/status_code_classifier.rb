@@ -8,10 +8,10 @@ class StatusCodeClassifier < Classifier
 
     c = StatusCodeClassifier.new
 
-    transaction_data[ :attributes ][ :responses ].each { |r|
+    transaction_data[ 'attributes' ][ 'responses' ].each { |r|
       Rails.logger.debug "transaction_response: #{r}"
 
-      case r[ :statusCode ]
+      case r[ 'statusCode' ].to_i
       when 200
         c.available = 1.0
       end

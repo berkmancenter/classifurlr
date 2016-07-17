@@ -22,16 +22,6 @@ RSpec.describe 'classify' do
   it ( 'accepts requests to classify' ) {
     post '/classify', format: :json, data: transaction_data
     expect( response.status ).to eq( 201 )
-
-    #puts "response: #{response.body}"
-
-    #classification = Classification.last
-
-    #puts "classification: #{classification.as_json}"
-
-    #expect( response.body ).to eq( { id: 6 }.as_json )
-
-    #expect( response.body ).to eq( { data: { type: 'classifications' } }.as_json )
   }
 
   it ( 'creates a classification' ) {
@@ -50,8 +40,6 @@ RSpec.describe 'classify' do
 
   it ( 'classifies up transactions as up' ) {
     post '/classify', format: :json, data: transaction_data
-
-    #puts response.body
 
     parsed = JSON.parse response.body
 

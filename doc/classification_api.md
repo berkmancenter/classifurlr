@@ -12,7 +12,7 @@ Query for classification
 
 Send POST requests to /classify to let us know that you would like a classification of one or more transaction with a URL. Send as much data as you have (including historic data) because each classification module will use what it can.
 
-POSTs to /classify should have the Content-Type application/vnd.api+json.
+POSTs to /classify should have the Content-Type: application/json.
 
 As per JSON API 1.0, the type attribute is required and must be the string 'transactions'.
 
@@ -21,8 +21,8 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
 #### HTTP request
 
     POST /classify HTTP/1.1
-    Content-Type: application/x-www-form-urlencoded
-    Accept: application/vnd.api+json
+    Content-Type: application/json
+    Accept: application/json
     
     {
       "data": {
@@ -58,7 +58,7 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
 #### HTTP response
 
     HTTP/1.1 200 OK
-    Content-Type: application/vnd.api+json
+    Content-Type: application/json
 
     {
       "data": {
@@ -193,7 +193,7 @@ Send a GET request to /classifiers for a list of all classifiers in the system.
 #### HTTP response
 
     HTTP/1.1 200 OK
-    Content-Type: application/vnd.api+json
+    Content-Type: application/json
 
     {
       "data": [ {
@@ -233,8 +233,8 @@ In the following example, the request to /classify is, in effect, turning off th
 #### HTTP request
 
     POST /classify HTTP/1.1
-    Content-Type: application/x-www-form-urlencoded
-    Accept: application/vnd.api+json
+    Content-Type: application/json
+    Accept: application/json
     
     {
       "data": {
@@ -263,7 +263,7 @@ In the following example, the request to /classify is, in effect, turning off th
 #### HTTP response
 
     HTTP/1.1 200 OK
-    Content-Type: application/vnd.api+json
+    Content-Type: application/json
 
     {
       "data": {

@@ -5,9 +5,8 @@ class ClassificationsController < ApplicationController
 
   # create a Classification with the supplied transaction_data
   def create
-    #Rails.logger.debug "ClassificationsController.create params[ :data ].class: #{params[ :data ].class}, data: #{params[ :data ]}"
     @classifaction = Classification.new transaction_data: params[ :data ]
-    @classifaction.classifiers << StatusCodeClassifier.classify( @classifaction.transaction_data.to_hash )
+    @classifaction.classifiers << StatusCodeClassifier.classify( @classifaction.transaction_data )
     @classifaction.classify
 
     if @classifaction.save

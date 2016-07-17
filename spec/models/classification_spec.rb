@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe Classification do
   let ( :transaction_data ) {
     {
-      attributes: {
-        responses: [ {
-          statusCode: 200
+      'attributes' => {
+        'responses' => [ {
+          'statusCode' => 200
         } ]
       }
     }
