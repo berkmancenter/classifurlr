@@ -16,11 +16,11 @@ RSpec.describe 'classify' do
           }
         } ]
       }
-    }.as_json
+    }
   }
 
   it ( 'accepts requests to classify' ) {
-    post '/classify', format: :json
+    post '/classify', format: :json, data: transaction_data
     expect( response.status ).to eq( 201 )
 
     #puts "response: #{response.body}"
@@ -36,7 +36,7 @@ RSpec.describe 'classify' do
 
   it ( 'creates a classification' ) {
     expect {
-      post '/classify', format: :json
+      post '/classify', format: :json, data: transaction_data
     }.to change { Classification.count }.by( 1 )
 
   }

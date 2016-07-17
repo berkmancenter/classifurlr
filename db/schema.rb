@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160717030902) do
+ActiveRecord::Schema.define(version: 20160717045142) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,12 +28,15 @@ ActiveRecord::Schema.define(version: 20160717030902) do
   create_table "classifiers", force: :cascade do |t|
     t.string   "name"
     t.float    "weight"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
     t.string   "type"
     t.float    "available"
     t.float    "block_page"
+    t.integer  "classification_id"
   end
+
+  add_index "classifiers", ["classification_id"], name: "index_classifiers_on_classification_id", using: :btree
 
   create_table "transaction_requests", force: :cascade do |t|
     t.integer  "timeout"
@@ -57,4 +60,5 @@ ActiveRecord::Schema.define(version: 20160717030902) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "classifiers", "classifications"
 end

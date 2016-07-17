@@ -1,4 +1,6 @@
 class Classifier < ActiveRecord::Base
+  belongs_to :classification
+
   after_initialize do
     self.name = self.class.name.underscore if name.nil?
     self.weight = self.class.default_weight if weight.nil?

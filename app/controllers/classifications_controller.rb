@@ -3,9 +3,12 @@ class ClassificationsController < ApplicationController
     @classifaction = Classification.find params[ :id ]
   end
 
+  # create a Classification with the supplied transaction_data
   def create
-    Rails.logger.info params[ :data ]
-    @classifaction = Classification.new
+    #Rails.logger.debug "ClassificationsController.create params[ :data ].class: #{params[ :data ].class}, data: #{params[ :data ]}"
+    @classifaction = Classification.new transaction_data: params[ :data ]
+    @classifaction.classifiers << StatusCodeClassifier.classify( @classifaction.transaction_data.to_hash )
+    @classifaction.classify
 
     if @classifaction.save
       render json: @classifaction, status: :created

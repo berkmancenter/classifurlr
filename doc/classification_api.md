@@ -161,7 +161,7 @@ The ID of the classification. Set by Classifurlr, it can be used to provide feed
 
 **status**
 
-The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, blocked, undetermined.
+The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, block_page, or null/undetermined.
 
 **available**
 
