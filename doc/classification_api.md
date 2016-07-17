@@ -1,7 +1,7 @@
 Classification API
 ==================
 
-This API allows any third party to submit HTTP request/response data for a URL and retrieve our best guess of the availability of that URL.
+This API allows any third party to submit HTTP transaction data (request/response data) for a URL and retrieve our best guess of the availability of that URL.
 
 Classifurlr uses many classification modules together in order to make a determination. Some modules can use machine learning and user feedback to improve.
 
@@ -49,7 +49,6 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
               "timeout": 10,
               "requestHeaders": "Accept: text/html\r\nAccept-Language: zh-Hans,zh\r\nUser-Agent: Mozilla/5.0 AppleWebKit/537 Chrome/41.0",
               "asn": "23650"
-
             }
           } ]
         }
@@ -68,7 +67,7 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
         "attributes": {
           "status": "up",
           "available": 1.0,
-          "blocked": 0.0,
+          "blockPage": 0.0,
           "classifiers": [ {
             "name": "status_code_classifier",
             "available": 1.0,
@@ -76,7 +75,7 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
           }, {
             "name": "block_page_classifier",
             "available": 1.0,
-            "blocked": 0.0,
+            "blockPage": 0.0,
             "weight": 1.0
           } ]
         }
@@ -168,18 +167,17 @@ The status of the request/response data as determined by the classifications. Th
 
 The probability, represented as a number from 0 to 1, that the given page is available to users connecting via the given ASN as determined by weighting the results from individual classifiers.
 
-**blocked**
+**blockPage**
 
-The probability, represented as a number from 0 to 1, that the given page is being blocked by some entity on the network as determined by weighting the results from individual classifiers.
-
+The probability, represented as a number from 0 to 1, that the given page is a known block page sent by some entity on the network as determined by weighting the results from individual classifiers.
 
 **classifiers**
 
 An array of results, one from each classifier queried, which help determine the final classification response.
 
-An individual classifier result will have a name and a weight. These are set by Classifurlr and used to classify a web response. Each classifier result will also have one or more of the probabilities (available &/or blocked).
+An individual classifier result will have a name and a weight. These are set by Classifurlr and used to classify a web response. Each classifier result will also have one or more probabilities (available, blockPage, etc.).
 
-Classifurlr uses the weight and probabilities together to determine the overall probabilities for the classification. 
+Classifurlr uses the individual weight and probabilities together to determine the overall probabilities for the classification. 
 
 Query for Classifiers
 ---------------------
@@ -201,13 +199,11 @@ Send a GET request to /classifiers for a list of all classifiers in the system.
       "data": [ {
         "id": "1",
         "name": "status_code_classifier",
-        "classifies": "available",
-        "weight": 0.6
+        "defaultWeight": 0.6
       }, {
         "id": "1",
         "name": "block_page_classifier",
-        "classifies": "available blocked",
-        "weight": 1.0
+        "defaultWeight": 1.0
       } ]
     }
 
@@ -221,13 +217,7 @@ The ID of the classifier.
 
 The name of the classifier. Set by Classifurlr, it can be used to reference a specific classifier by name when providing custom weights or feedback.
 
-**classifies**
-
-An list of censorship types this classifier will attempt to determine from the request data. This also relates to which attributes the given classifier will return in a request to /classify.
-
-The list is a space-delimited string and one or more of the following words: available, blocked.
-
-**weight**
+**defaultWeight**
 
 The default weight given to this classifier. It can be overridden in requests to /classify (see below).
 
@@ -236,7 +226,7 @@ Custom weights
 
 When making a request to /classify, you can override the default weight on any classifier by using the classifiers attribute. The classifiers attribute is an array of objects having a classifier name weight. The weight you provide will override the default weight of the given classifier.
 
-In the following example, the request to /classify is, in effect, turning off the block_page_classifier by setting its weight to 0.0. Even though the page is clearly a block page, the classified result is that it is available and not blocked.
+In the following example, the request to /classify is, in effect, turning off the block_page_classifier by setting its weight to 0.0. Even though the page is clearly a block page, the classified result is that it is available.
 
 ### Example
 
@@ -252,7 +242,12 @@ In the following example, the request to /classify is, in effect, turning off th
         "attributes": {
           "url": "http://cyber.law.harvard.edu",
           "responses": [ {
-            . . .
+            "statusCode": 200,
+            "rawResults": "<!DOCTYPE html><html><head><title>The requested page is Forbidden</title></head><body>...</body></html>",
+            "screenshot": "data:image/png;base64,iVBOR...==",
+            "request": {
+              ...
+            }
           } ],
           "classifiers": [ {
             "name": "status_code_classifier",
@@ -277,7 +272,7 @@ In the following example, the request to /classify is, in effect, turning off th
         "attributes": {
           "status": "up",
           "available": 1.0,
-          "blocked": 0.0,
+          "blockPage": 0.0,
           "classifiers": [ {
             "name": "status_code_classifier",
             "available": 1.0,
@@ -285,12 +280,11 @@ In the following example, the request to /classify is, in effect, turning off th
           }, {
             "name": "block_page_classifier",
             "available": 0.0,
-            "blocked": 1.0,
+            "blockPage": 1.0,
             "weight": 0.0
           } ]
         }
       }
     }
 
-
-
+> Written with [StackEdit](https://stackedit.io/).
