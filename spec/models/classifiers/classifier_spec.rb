@@ -7,5 +7,11 @@ RSpec.describe Classifier do
     expect( Classifier.default_weight ).to eq( 1.0 )
   }
 
+  it {
+    expect {
+      Classifier.classify( nil )
+    }.to raise_error( NotImplementedError )
+  }
+
 end
 

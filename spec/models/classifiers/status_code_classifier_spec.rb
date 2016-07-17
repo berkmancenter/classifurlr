@@ -19,32 +19,26 @@ RSpec.describe StatusCodeClassifier do
     expect( StatusCodeClassifier.create.weight ).to eq( 0.8 )
   }
 
-#  describe 'classify' do
-#    let ( :transaction_data ) {
-#      {
-#        type: 'transactions',
-#        attributes: {
-#          url: 'http://cyber.law.harvard.edu',
-#          responses: [ {
-#            statusCode: 0,
-#          } ]
-#        }
-#      }
-#    }
-#
-#    let ( :status_code_classifier ) { StatusCodeClassifier.new }
-#
-#    context '200 response' do
-#      it {
-#        transaction_data[ :attributes ][ :responses ][ 0 ][ :statusCode ] = 200
-#        expect {
-#          status_code_classifier.classify( transaction_data ).to eq( {
-#            name: 'status_code_classifier',
-#            available: 1.0,
-#            weight: 1.0
-#          } )
-#        }
-#      }
-#    end
-#  end
+  describe 'classify' do
+    let ( :transaction_data ) {
+      {
+        attributes: {
+          responses: [ {
+            statusCode: 0
+          } ]
+        }
+      }
+    }
+
+    context '200 response' do
+      it {
+        transaction_data[ :attributes ][ :responses ][ 0 ][ :statusCode ] = 200
+        c = StatusCodeClassifier.classify( transaction_data )
+
+        expect( c.name ).to eq( 'status_code_classifier' )
+        expect( c.weight ).to eq( 0.8 )
+        expect( c.available ).to eq( 1.0 )
+      }
+    end
+  end
 end
