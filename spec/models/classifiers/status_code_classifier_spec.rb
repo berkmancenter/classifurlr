@@ -20,19 +20,27 @@ RSpec.describe StatusCodeClassifier do
   }
 
   describe 'classify' do
-    let ( :transaction_data ) {
-      {
-        'attributes' => {
-          'responses' => [ {
-            'statusCode' => 0
-          } ]
-        }
+    context 'transaction_data' do
+      let ( :transaction_data ) {
+        { 'attributes' => {
+        } }
       }
-    }
+
+      it ( 'should require url in transaction_data' ) {
+        expect( StatusCodeClassifier.classify( transaction_data ) ).to_not be_valid
+      }
+    end
 
     context '200 response' do
+      let ( :transaction_data ) {
+        { 'attributes' => {
+            'responses' => [ {
+              'statusCode' => 200
+            } ]
+        } }
+      }
+
       it {
-        transaction_data[ 'attributes' ][ 'responses' ][ 0 ][ 'statusCode' ] = 200
         c = StatusCodeClassifier.classify( transaction_data )
 
         expect( c.name ).to eq( 'status_code_classifier' )
