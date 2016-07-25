@@ -1,4 +1,8 @@
 class ClassificationsController < ApplicationController
+  def index
+    @classifactions = Classification.all
+  end
+
   def show
     @classifaction = Classification.find params[ :id ]
   end

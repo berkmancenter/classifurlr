@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  get 'classifications' => 'classifications#index'
   get 'classifications/:id' => 'classifications#show'
   post 'classify' => 'classifications#create', as: :classify
 
