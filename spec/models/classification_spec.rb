@@ -52,7 +52,9 @@ RSpec.describe Classification do
     jsonapi_hash = c.as_jsonapi
 
     expect( jsonapi_hash[ 'data' ] ).not_to be_nil
-    expect( jsonapi_hash[ 'data' ][ 'type' ] ).to eq( 'transactions' )
+    expect( jsonapi_hash[ 'data' ][ 'type' ] ).to eq( 'classifications' )
+    expect( jsonapi_hash[ 'data' ][ 'attributes' ] ).not_to be_nil
+    expect( jsonapi_hash[ 'data' ][ 'attributes' ][ 'status' ] ).to eq( 'up' )
   }
 
 end

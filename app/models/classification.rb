@@ -14,7 +14,11 @@ class Classification < ActiveRecord::Base
   def as_jsonapi
     {
       'data' => {
-        'type' => 'transactions'
+        'type' => 'classifications',
+        'attributes' => {
+          'status' => status,
+          'available' => available
+        }
       }
     }
   end

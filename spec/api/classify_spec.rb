@@ -45,7 +45,7 @@ RSpec.describe 'classify' do
 
     parsed = JSON.parse response.body
 
-    expect( parsed[ 'data' ] ).not_to be_null
+    expect( parsed[ 'data' ] ).not_to be_nil
   }
 
   it ( 'classifies up transactions as up' ) {
@@ -53,7 +53,7 @@ RSpec.describe 'classify' do
 
     parsed = JSON.parse response.body
 
-    expect( parsed[ 'status' ] ).to eq( 'up' )
+    expect( parsed[ 'data' ][ 'attributes' ][ 'status' ] ).to eq( 'up' )
   }
 
 
