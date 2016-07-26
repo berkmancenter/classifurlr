@@ -88,15 +88,15 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
 
 **url**
 
-The URL to which the given request and response data applies.
+The URL to which the given request and response data applies. The url attribute is required.
 
 **responses**
 
-An array of response data returned to the original request. There must be at least one but historic data can also be sent and may be useful to some classifiers.
+An array of response data returned to the original request. There must be at least one response to classify or an error will be returned.
 
-**responses[x].request**
+Historic data can be sent and may be useful to some classifiers.
 
-Data about the original request related to each individual response.
+Multiple responses from a single session can also be sent and will allow classifiers to follow redirects.
 
 #### response attributes
 
@@ -107,6 +107,8 @@ HTTP status code returned in the response.
 **responseHeaders**
 
 The HTTP headers sent as part of the response. Each header should be separated by CRLF as defined by HTTP.
+
+If you are sending more than one response with your transaction data, it is strongly recommended that you include the responseHeaders attribute in each response object (as well as matching url in the related request object). This way, the classifiers can differentiate between, e.g., redirects, historic data, or unrelated requests.
 
 **rawResults**
 
@@ -145,11 +147,15 @@ Data URI of an image of the rendered response, if available.
 
 Data about the request original request to which this data is a response.
 
-#### request attributes
+#### response[x].request attributes
 
 **url**
 
-For each request, you can include the url requested. This is useful to classifiers to determine/follow redirects and other anomolies.
+For each request, you can include the url requested. This is useful to classifiers to determine/follow redirects and other anomalies.
+
+If you are sending more than one response, it is strongly recommended that you include the url attribute in each request object (as well as matching responseHeaders in the related response object). This way, the classifiers can differentiate between, e.g., redirects, historic data, or unrelated requests.
+
+If the url attribute is **not** supplied in the request objects, the classifiers will be forced to operate on the first response/request pair only which may give you a less accurate classification.
 
 **timeout**
 
@@ -333,4 +339,15 @@ In the following example, the request to /classify is, in effect, turning off th
       }
     }
 
+Errors
+------
+
+If a request in invalid or something goes wrong, classifurlr will respond with the appropriate HTTP status code and an error object as per the JSON API spec: http://jsonapi.org/format/#error-objects
+
+### 400 Bad Request
+
+The type and top-level url attributes are required. Also, there must be at least one response object in the responses array. Failure to supply these will result in a 400 Bad Request response.
+
+
 > Written with [StackEdit](https://stackedit.io/).
+
