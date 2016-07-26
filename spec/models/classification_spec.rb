@@ -34,7 +34,7 @@ RSpec.describe Classification do
     }.to change { c.classifiers.count }.by( 1 )
   }
 
-  it ('can classify' ) {
+  it ( 'can classify' ) {
     c = Classification.new
     c.classifiers << StatusCodeClassifier.classify( transaction_data )
     c.classify
@@ -42,5 +42,18 @@ RSpec.describe Classification do
     expect( c.available ).to eq( 1.0 )
     expect( c.status ).to eq( 'up' )
   }
+
+  it { should respond_to( :as_jsonapi ) }
+
+  it ( 'returns jsonapi_hash' ) {
+    c = Classification.new
+    c.classifiers << StatusCodeClassifier.classify( transaction_data )
+    c.classify
+    jsonapi_hash = c.as_jsonapi
+
+    expect( jsonapi_hash[ 'data' ] ).not_to be_nil
+    expect( jsonapi_hash[ 'data' ][ 'type' ] ).to eq( 'transactions' )
+  }
+
 end
 

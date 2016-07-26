@@ -11,6 +11,14 @@ class Classification < ActiveRecord::Base
     @@available_threshold = val
   end
 
+  def as_jsonapi
+    {
+      'data' => {
+        'type' => 'transactions'
+      }
+    }
+  end
+
   # given all current classifier values and weights
   # detmine a final value for status, available, and block_page
   def classify

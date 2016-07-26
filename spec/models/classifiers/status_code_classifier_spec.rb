@@ -26,7 +26,7 @@ RSpec.describe StatusCodeClassifier do
         } }
       }
 
-      it ( 'should require url in transaction_data' ) {
+      skip ( 'should require url in transaction_data' ) {
         expect( StatusCodeClassifier.classify( transaction_data ) ).to_not be_valid
       }
     end

@@ -14,9 +14,9 @@ class ClassificationsController < ApplicationController
     @classifaction.classify
 
     if @classifaction.save
-      render json: @classifaction, status: :created
+      render json: @classifaction.as_jsonapi, status: :created
     else
-      render json: { error: 'oops' }.to_json, status: 500
+      render json: { error: 'oops' }, status: 500
     end
   end
 end
