@@ -177,7 +177,7 @@ The ID of the classification. Set by Classifurlr, it can be used to provide feed
 
 **status**
 
-The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, block_page, or null/undetermined.
+The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, blockpage, or undetermined.
 
 **available**
 
@@ -346,8 +346,55 @@ If a request in invalid or something goes wrong, classifurlr will respond with t
 
 ### 400 Bad Request
 
-The type and top-level url attributes are required. Also, there must be at least one response object in the responses array. Failure to supply these will result in a 400 Bad Request response.
+The type and top-level url attributes are required. Also, there must be at least one response object in the responses array. Failure to supply these will result in a 400 Bad Request response and a error object similar to:
 
+    {
+      "errors": [ {
+        "status": "400",
+        "title": "Bad Request"
+      }, {
+        "detail": "url attribute is required"
+      }, {
+        "detail": "at least one response object is required"
+      } ]
+    }
+
+### 500 Internal Server Error
+
+When an unexpected condition is encountered while attempting to classify transaction data, classifurlr will return a 500 HTTP status code. There is no guaranteed content or content format in the response.
+
+### 501 Not Implemented
+
+If a request to classifurlr has valid transaction data but a status cannot be determined with enough confidence, classifurlr will return a 501 HTTP status code and a JSON API document containing both a data object and an errors object. The data object will contain information on which classifiers were attempted and, possibly, partial results.
+
+    {
+      "data": {
+        "type": "classifications",
+        "id": "1134",
+        "attributes": {
+          "status": "undetermined",
+          "available": null,
+          "blockPage": 0.0,
+          "classifiers": [ {
+            "name": "status_code_classifier",
+            "available": null,
+            "weight": 0.6
+          }, {
+            "name": "block_page_classifier",
+            "available": 1.0,
+            "blockPage": 0.0,
+            "weight": 1.0
+          } ]
+        }
+      },
+      "errors": [ {
+        "status": "501",
+        "title": "Not Implemented"
+      }, {
+        "source": "status_code_classifier",
+        "detail": "no status codes"
+      } ]
+    }
 
 > Written with [StackEdit](https://stackedit.io/).
 
