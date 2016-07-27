@@ -365,7 +365,7 @@ When an unexpected condition is encountered while attempting to classify transac
 
 ### 501 Not Implemented
 
-If a request to classifurlr has valid transaction data but a status cannot be determined with enough confidence, classifurlr will return a 501 HTTP status code and a JSON API document containing both a data object and an errors object. The data object will contain information on which classifiers were attempted and, possibly, partial results.
+If a request to classifurlr has valid transaction data but a status cannot be determined with enough confidence, classifurlr will return a 501 HTTP status code and a JSON API document containing both a data object and an errors object. The data object will contain information on which classifiers were attempted and, possibly, partial results. It is possible that, at a later date, classifurlr would be able to make a determination given the same transaction data because of new classifiers or better tuned existing classifiers.
 
     {
       "data": {
