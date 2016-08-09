@@ -34,14 +34,12 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
             "responseHeaders": "Cache-Control: public, max-age=3600\r\nContent-Type: text/html; charset=utf-8",
             "rawResults": "<!DOCTYPE html><html><head><title>Berkman Center for Internet and society</title></head><body>...</body></html>",
             "timings": {
-               "blocked": 0,
                "dns": -1,
                "connect": 15,
                "send": 20,
                "wait": 38,
                "receive": 12,
-               "ssl": -1,
-               "comment": ""
+               "ssl": -1
             },
             "errorsEncountered": "",
             "certificateChain": "",
@@ -69,15 +67,16 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
         "attributes": {
           "status": "up",
           "available": 1.0,
-          "blockPage": 0.0,
+          "unavailable": 0.0,
+          "blocked": 0.0,
           "classifiers": [ {
-            "name": "status_code_classifier",
+            "type": "StatusCodeClassifier",
             "available": 1.0,
+            "unavailable": 0.0,
             "weight": 0.6
           }, {
-            "name": "block_page_classifier",
-            "available": 1.0,
-            "blockPage": 0.0,
+            "type": "BlockPageClassifier",
+            "blocked": 0.0,
             "weight": 1.0
           } ]
         }
@@ -122,14 +121,12 @@ Please follow the timings format in the HAR spec: http://www.softwareishard.com/
 
 Possible attributes for the timings object include:
 
-* blocked
 * dns
 * connect
 * send
 * wait
 * receive
 * ssl
-* comment
 
 **errorsEncountered**
 
@@ -177,23 +174,27 @@ The ID of the classification. Set by Classifurlr, it can be used to provide feed
 
 **status**
 
-The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, blockpage, or undetermined.
+The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, blocked, or undetermined.
 
 **available**
 
-The probability, represented as a number from 0 to 1, that the given page is available to users connecting via the given ASN as determined by weighting the results from individual classifiers.
+Confidence, as determined by weighting the results from individual classifiers, represented as a number from 0 to 1, that the given page is available to users connecting via the given ASN . A low confidence of being available does not imply that the page is definitely not available.
 
-**blockPage**
+**unavailable**
 
-The probability, represented as a number from 0 to 1, that the given page is a known block page sent by some entity on the network as determined by weighting the results from individual classifiers.
+Confidence, as determined by weighting the results from individual classifiers, represented as a number from 0 to 1, that the given page is *not* available to users connecting via the given ASN . A low confidence of being unavailable does not imply that the page is definitely available. For example, if the request had timed out, both available and unavailable will be 0 and status will likely be undetermined.
+
+**blocked**
+
+Confidence, as determined by weighting the results from individual classifiers, represented as a number from 0 to 1, that the given page is not available to users connecting via the given ASN due to *intentional efforts* by another party, e.g., the content is a known block page. A low confidence of being blocked does not imply that the page is definitely available.
 
 **classifiers**
 
 An array of results, one from each classifier queried, which help determine the final classification response.
 
-An individual classifier result will have a name and a weight. These are set by Classifurlr and used to classify a web response. Each classifier result will also have one or more probabilities (available, blockPage, etc.).
+An individual classifier result will have a name and a weight. These are set by Classifurlr and used to classify a web response. Each classifier result will also have one or more attributes giving their individual confidence of the status of the response, e.g., available, unavailable, and/or blocked.
 
-Classifurlr uses the individual weight and probabilities together to determine the overall probabilities for the classification. 
+Classifurlr uses the individual weight and confidences together to determine the overall confidences for the classification. 
 
 ### Redirect Example
 
@@ -249,21 +250,15 @@ Send a GET request to /classifiers for a list of all classifiers in the system.
 
     {
       "data": [ {
-        "id": "1",
-        "name": "status_code_classifier",
+        "type": "StatusCodeClassifier",
         "defaultWeight": 0.6
       }, {
-        "id": "1",
-        "name": "block_page_classifier",
+        "type": "BlockPageClassifier",
         "defaultWeight": 1.0
       } ]
     }
 
 ### classifier response attributes
-
-**id**
-
-The ID of the classifier. 
 
 **name**
 
@@ -278,7 +273,7 @@ Custom weights
 
 When making a request to /classify, you can override the default weight on any classifier by using the classifiers attribute. The classifiers attribute is an array of objects having a classifier name weight. The weight you provide will override the default weight of the given classifier.
 
-In the following example, the request to /classify is, in effect, turning off the block_page_classifier by setting its weight to 0.0. Even though the page is clearly a block page, the classified result is that it is available.
+In the following example, the request to /classify is, in effect, turning off the BlockPageClassifier by setting its weight to 0.0. Even though the page is clearly a block page, the classified result is that it is available.
 
 ### Example
 
@@ -302,10 +297,10 @@ In the following example, the request to /classify is, in effect, turning off th
             }
           } ],
           "classifiers": [ {
-            "name": "status_code_classifier",
+            "type": "StatusCodeClassifier",
             "weight": 1.0
           }, {
-            "name": "block_page_classifier",
+            "type": "BlockPageClassifier",
             "weight": 0.0
           } ]
         }
@@ -324,15 +319,16 @@ In the following example, the request to /classify is, in effect, turning off th
         "attributes": {
           "status": "up",
           "available": 1.0,
-          "blockPage": 0.0,
+          "unavailable": 0.0,
+          "blocked": 0.0,
           "classifiers": [ {
-            "name": "status_code_classifier",
+            "type": "StatusCodeClassifier",
             "available": 1.0,
+            "unavailable": 0.0,
             "weight": 1.0
           }, {
-            "name": "block_page_classifier",
-            "available": 0.0,
-            "blockPage": 1.0,
+            "type": "BlockPageClassifier",
+            "blocked": 1.0,
             "weight": 0.0
           } ]
         }
@@ -363,7 +359,7 @@ The type and top-level url attributes are required. Also, there must be at least
 
 When an unexpected condition is encountered while attempting to classify transaction data, classifurlr will return a 500 HTTP status code. There is no guaranteed content or content format in the response.
 
-### 501 Not Implemented
+### individual classifier errors
 
 If a request to classifurlr has valid transaction data but a status cannot be determined with enough confidence, classifurlr will return a 501 HTTP status code and a JSON API document containing both a data object and an errors object. The data object will contain information on which classifiers were attempted and, possibly, partial results.
 
@@ -373,26 +369,24 @@ If a request to classifurlr has valid transaction data but a status cannot be de
         "id": "1134",
         "attributes": {
           "status": "undetermined",
-          "available": null,
+          "available": 0.0,
+          "unavailable": 0.0,
           "blockPage": 0.0,
           "classifiers": [ {
-            "name": "status_code_classifier",
-            "available": null,
+            "type": "StatusCodeClassifier",
+            "available": 0.0,
+            "unavailable": 0.0,
             "weight": 0.6
           }, {
-            "name": "block_page_classifier",
-            "available": 1.0,
+            "type": "BlockPageClassifier",
             "blockPage": 0.0,
             "weight": 1.0
           } ]
         }
       },
       "errors": [ {
-        "status": "501",
-        "title": "Not Implemented"
-      }, {
-        "source": "status_code_classifier",
-        "detail": "no status codes"
+        "source": "StatusCodeClassifier",
+        "detail": "missing status code"
       } ]
     }
 
