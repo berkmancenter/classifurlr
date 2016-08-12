@@ -5,16 +5,20 @@ This API allows any third party to submit HTTP transaction data (request/respons
 
 Classifurlr uses many classification modules together in order to make a determination. Some modules can use machine learning and user feedback to improve.
 
-This API (mostly) adheres to the JSON API 1.0 specification: http://jsonapi.org/
-
 Query for classification
 ------------------------
 
-Send POST requests to /classify to let us know that you would like a classification of one or more transaction with a URL. Send as much data as you have (including historic data) because each classification module will use what it can.
+Send POST requests to /classify to let us know that you would like a classification of one or more transactions with a URL. Send as much data as you have (including historic data) because each classification module will use what it can.
 
 POSTs to /classify should have the Content-Type: application/json.
 
-As per JSON API 1.0, the type attribute is required and must be the string 'transactions'.
+The content should follow the [HTTP Archive (HAR) specification](http://www.softwareishard.com/blog/har-12-spec/) with the addition of:
+
+* an "_asn" attribute in each request object
+* "_raw" & "_screenshot" attributes in each response.content object
+* an optional "_error" attribute in each response object if an error was encountered while making the request
+
+Each current and historic session should get its own page object in the pages array. Even though they will all have the same URL, for the purposes of classification, a session from a different time is a different page in this spec.
 
 ### Basic Example
 
@@ -25,33 +29,70 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
     Accept: application/json
     
     {
-      "data": {
-        "type": "transactions",
-        "attributes": {
-          "url": "http://cyber.law.harvard.edu",
-          "responses": [ {
-            "statusCode": 200,
-            "responseHeaders": "Cache-Control: public, max-age=3600\r\nContent-Type: text/html; charset=utf-8",
-            "rawResults": "<!DOCTYPE html><html><head><title>Berkman Center for Internet and society</title></head><body>...</body></html>",
-            "timings": {
-               "dns": -1,
-               "connect": 15,
-               "send": 20,
-               "wait": 38,
-               "receive": 12,
-               "ssl": -1
+      "log": {
+        "version": "1.2",
+        "pages": [
+          {
+            "startedDateTime": "2016-08-10T18:46:56.902Z",
+            "id": "page_1",
+            "title": "http://cyber.law.harvard.edu/"
+          }
+        ],
+        "entries": [ {
+          "pageref": "page_1",
+          "startedDateTime": "2016-08-10T18:46:56.902Z",
+          "time": 62.799999956041574,
+          "request": {
+            "_asn": "23650",
+            "method": "GET",
+            "url": "http://cyber.law.harvard.edu/",
+            "httpVersion": "HTTP/1.1",
+            "headers": [ {
+              "name": "Accept",
+              "value": "text/html"
+            }, {
+              "name": "Accept-Language",
+              "value": "zh-Hans,zh"
+            }, {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 AppleWebKit/537 Chrome/41.0"
+            } ],
+            "queryString": [],
+            "cookies": [],
+            "headersSize": 103,
+            "bodySize": 0
+          },
+          "response": {
+            "status": 200,
+            "statusText": "OK",
+            "httpVersion": "HTTP/1.1",
+            "headers": [ {
+              "name": "Cache-Control",
+              "value": "public, max-age=3600"
+            }, {
+              "name": "Content-Type",
+              "value": "text/html; charset=UTF-8"
+            } ],
+            "cookies": [],
+            "content": {
+              "size": 37120,
+              "mimeType": "text/html",
+              "_raw": "<!DOCTYPE html><html><head><title>Berkman Center for Internet and society</title></head><body>...</body></html>",
+              "_screenshot": "data:image/png;base64,iVBOR...=="
             },
-            "errorsEncountered": "",
-            "certificateChain": "",
-            "screenshot": "data:image/png;base64,iVBOR...==",
-            "request": {
-              "url": "http://cyber.law.harvard.edu",
-              "timeout": 10,
-              "requestHeaders": "Accept: text/html\r\nAccept-Language: zh-Hans,zh\r\nUser-Agent: Mozilla/5.0 AppleWebKit/537 Chrome/41.0",
-              "asn": "23650"
-            }
-          } ]
-        }
+            "headersSize": 77,
+            "bodySize": 8548,
+            "_error": ""
+          },
+          "cache": {},
+          "timings": {
+            "connect": 15.0040000444278,
+            "send": 0.09600003249940059,
+            "wait": 16.833000001497602,
+            "receive": 1.789000001735996
+          },
+          "serverIPAddress": "128.103.64.74"
+        } ]
       }
     }
 
@@ -67,12 +108,10 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
         "attributes": {
           "status": "up",
           "available": 1.0,
-          "unavailable": 0.0,
           "blocked": 0.0,
           "classifiers": [ {
             "type": "StatusCodeClassifier",
             "available": 1.0,
-            "unavailable": 0.0,
             "weight": 0.6
           }, {
             "type": "BlockPageClassifier",
@@ -83,7 +122,15 @@ As per JSON API 1.0, the type attribute is required and must be the string 'tran
       }
     }
 
-### classification request attributes
+### Notable classification request attributes
+
+#### log
+
+The root object of an HTTP Archive. It contains the pages and entities arrays.
+
+#### pages
+
+
 
 **url**
 
@@ -174,7 +221,7 @@ The ID of the classification. Set by Classifurlr, it can be used to provide feed
 
 **status**
 
-The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, blocked, or undetermined.
+The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, blocked, or undetermined. It is based on an analysis of the available & blocked attributes.
 
 **available**
 
@@ -379,7 +426,7 @@ If a request to classifurlr has valid transaction data but a status cannot be de
             "weight": 0.6
           }, {
             "type": "BlockPageClassifier",
-            "blockPage": 0.0,
+            "blocked": 0.0,
             "weight": 1.0
           } ]
         }
