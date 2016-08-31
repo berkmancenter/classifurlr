@@ -46,7 +46,6 @@ Each current and historic session should get its own page object in the pages ar
             "_asn": "23650",
             "method": "GET",
             "url": "http://cyber.law.harvard.edu/",
-            "httpVersion": "HTTP/1.1",
             "headers": [ {
               "name": "Accept",
               "value": "text/html"
@@ -57,7 +56,6 @@ Each current and historic session should get its own page object in the pages ar
               "name": "User-Agent",
               "value": "Mozilla/5.0 AppleWebKit/537 Chrome/41.0"
             } ],
-            "queryString": [],
             "cookies": [],
             "headersSize": 103,
             "bodySize": 0
@@ -124,25 +122,98 @@ Each current and historic session should get its own page object in the pages ar
 
 ### Notable classification request attributes
 
+This section has notes on attributes which are part of the HAR spec as well as extensions to the HAR spec which classifurlr needs to properly classify request data.
+
 #### log
 
 The root object of an HTTP Archive. It contains the pages and entities arrays.
 
 #### pages
 
-
-
-**url**
-
-The URL to which the given request and response data applies. The url attribute is required.
-
-**responses**
-
-An array of response data returned to the original request. There must be at least one response to classify or an error will be returned.
+This object represents list of exported pages. In the context of classifurlr, they should all be to the same web page though they can be from different times and ASNs.
 
 Historic data can be sent and may be useful to some classifiers.
 
-Multiple responses from a single session can also be sent and will allow classifiers to follow redirects.
+**startedDateTime**
+
+Date and time stamp for the beginning of the page load (ISO 8601).
+
+**id**
+
+Unique identifier of a page within the log. Entries use it to refer the parent page.
+
+#### entries
+
+This object represents an array with all exported HTTP requests. 
+
+Multiple requests from a single session can also be sent and will allow classifiers to follow redirects.
+
+**pageref**
+
+Reference to the parent page's id. Optional and can be left out if there is only one page in the submission, e.g., no historic data.
+
+**startedDateTime**
+
+Date and time stamp of the request start (ISO 8601).
+
+**time**
+
+Total elapsed time of the request in milliseconds. This is the sum of all timings available in the timings object (i.e. not including -1 values).
+
+**request**
+
+Detailed info about the request.
+
+**response**
+
+Detailed info about the response.
+
+**cache**
+
+Info about cache usage.
+
+**timings**
+
+Detailed timing info about request/response round trip.
+
+**serverIPAddress**
+
+IP address of the server that was connected (result of DNS resolution).
+
+#### request
+
+**_asn**
+
+The Autonomous System Number for the ISP to which the original requesting machine connected.
+
+**method**
+
+Request method (GET, POST, ...).
+
+**url**
+
+Absolute URL to which the given request and response data applies (fragments are not included).
+
+**headers**
+
+List of header objects, each containing name and value attributes.
+
+**cookies**
+
+List of cookie objects, each containing at least name and value attributes. Other attributes are allowed and described in the HAR spec.
+
+**headersSize**
+
+Total number of bytes from the start of the HTTP request message until (and including) the double CRLF before the body. Set to -1 if the info is not available.
+
+**bodySize**
+
+Size of the request body (POST data payload) in bytes.
+
+#### response
+
+An array of response data returned to the original request. There must be at least one response to classify or an error will be returned.
+
 
 #### response attributes
 
