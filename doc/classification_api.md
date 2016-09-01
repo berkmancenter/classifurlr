@@ -46,6 +46,7 @@ Each current and historic session should get its own page object in the pages ar
             "_asn": "23650",
             "method": "GET",
             "url": "http://cyber.law.harvard.edu/",
+            "httpVersion": "HTTP/1.1",
             "headers": [ {
               "name": "Accept",
               "value": "text/html"
@@ -144,9 +145,9 @@ Unique identifier of a page within the log. Entries use it to refer the parent p
 
 #### entries
 
-This object represents an array with all exported HTTP requests. 
+This object represents an array with all HTTP request & response data relating to a page you wish to classify.
 
-Multiple requests from a single session can also be sent and will allow classifiers to follow redirects.
+Multiple entries with different URLs from a single session (page) can also be sent and will allow classifiers to follow redirects.
 
 **pageref**
 
@@ -186,6 +187,8 @@ IP address of the server that was connected (result of DNS resolution).
 
 The Autonomous System Number for the ISP to which the original requesting machine connected.
 
+This is a custom extension to the spec and begins with an underscore.
+
 **method**
 
 Request method (GET, POST, ...).
@@ -194,13 +197,17 @@ Request method (GET, POST, ...).
 
 Absolute URL to which the given request and response data applies (fragments are not included).
 
+**httpVersion**
+
+Request HTTP Version.
+
 **headers**
 
-List of header objects, each containing name and value attributes.
+List of request headers as objects, each containing name and value attributes.
 
 **cookies**
 
-List of cookie objects, each containing at least name and value attributes. Other attributes are allowed and described in the HAR spec.
+List of request cookie objects, each containing at least name and value attributes. Other attributes are allowed and described in the HAR spec.
 
 **headersSize**
 
@@ -212,20 +219,27 @@ Size of the request body (POST data payload) in bytes.
 
 #### response
 
-An array of response data returned to the original request. There must be at least one response to classify or an error will be returned.
-
-
-#### response attributes
-
-**statusCode**
+**status**
 
 HTTP status code returned in the response.
 
-**responseHeaders**
+**statusText**
 
-The HTTP headers sent as part of the response. Each header should be separated by CRLF as defined by HTTP.
+HTTP response status description.
 
-If you are sending more than one response with your transaction data, it is strongly recommended that you include the responseHeaders attribute in each response object (as well as matching url in the related request object). This way, the classifiers can differentiate between, e.g., redirects, historic data, or unrelated requests.
+**httpVersion**
+
+Response HTTP Version.
+
+**headers**
+
+List of response headers as objects, each containing name and value attributes.
+
+If you are sending more than one entry with your transaction data, it is strongly recommended that you include the response headers attribute in each response object (as well as matching url in the related request object). This way, the classifiers can differentiate between, e.g., redirects, historic data, or unrelated requests.
+
+**cookies**
+
+List of response cookie objects, each containing at least name and value attributes. Other attributes are allowed and described in the HAR spec.
 
 **rawResults**
 
