@@ -241,9 +241,39 @@ If you are sending more than one entry with your transaction data, it is strongl
 
 List of response cookie objects, each containing at least name and value attributes. Other attributes are allowed and described in the HAR spec.
 
-**rawResults**
+**content**
 
-Full HTML of response.
+This object describes details about response content.
+
+The following four attributes (size, mimeType, _raw, & _screenshot) are part of the content object.
+
+**content.size**
+
+Length of the returned content in bytes. Should be equal to response.bodySize if there is no compression and bigger when the content has been compressed.
+
+**content.mimeType**
+
+MIME type of the response text (value of the Content-Type response header). The charset attribute of the MIME type is included (if available).
+
+**content._raw**
+
+The full HTML of response body if the mimeType is HTML.
+
+This is a custom extension to the spec and begins with an underscore.
+
+**content._screenshot**
+
+Data URI of an image of the rendered response, if available.
+
+This is a custom extension to the spec and begins with an underscore.
+
+**headersSize**
+
+Total number of bytes from the start of the HTTP response message until (and including) the double CRLF before the body. Set to -1 if the info is not available.
+
+**bodySize**
+
+Size of the request body (POST data payload) in bytes.
 
 **timings**
 
@@ -268,9 +298,6 @@ Any errors encountered during the request, separated by CRLF.
 
 Certificates accepted during the request. If there are more than one certificate, separate them with an empty line (CRLF).
 
-**screenshot**
-
-Data URI of an image of the rendered response, if available.
 
 **request**
 
