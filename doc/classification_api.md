@@ -76,7 +76,7 @@ Each current and historic session should get its own page object in the pages ar
             "content": {
               "size": 37120,
               "mimeType": "text/html",
-              "_raw": "<!DOCTYPE html><html><head><title>Berkman Center for Internet and society</title></head><body>...</body></html>",
+              "_raw": "<!DOCTYPE html><html><head><title>Berkman Klein Center for Internet and society</title></head><body>...</body></html>",
               "_screenshot": "data:image/png;base64,iVBOR...=="
             },
             "headersSize": 77,
@@ -98,9 +98,8 @@ Each current and historic session should get its own page object in the pages ar
 
 #### HTTP response
 
-    HTTP/1.1 200 OK
+    HTTP/1.1 201 Created
     Content-Type: application/json
-
 
       {
         "data": {
@@ -330,6 +329,10 @@ Classifurlr uses the individual statusus and weights together to determine the o
 
 ### Redirect Example
 
+This example shows what a HAR with a redirect looks like. There is still a single page, the original URL requested. The first response entity shows a 301 status code and a Location header, pointing to the HTTPS version of the website. Upon following the redirect, the real content comes back. Both entities reference the same page id.
+
+Only pertinent attributes are shown.
+
 #### HTTP request
 
     POST /classify HTTP/1.1
@@ -337,32 +340,79 @@ Classifurlr uses the individual statusus and weights together to determine the o
     Accept: application/json
     
     {
-      "data": {
-        "type": "transactions",
-        "attributes": {
-          "url": "http://cyber.law.harvard.edu",
-          "responses": [ {
-            "statusCode": 301,
-            "responseHeaders": "Location: https://cyber.law.harvard.edu/",
-            "rawResults": "",
-            "request": {
-              "url": "http://cyber.law.harvard.edu",
-              "requestHeaders": "Accept: text/html\r\nAccept-Language: zh-Hans,zh\r\nUser-Agent: Mozilla/5.0 AppleWebKit/537 Chrome/41.0",
-              "asn": "23650"
+      "log": {
+        "pages": [ { "id": "page_1", } ],
+        "entries": [ {
+          "pageref": "page_1",
+          "request": {
+            "method": "GET",
+            "url": "http://cyber.law.harvard.edu/"
+          },
+          "response": {
+            "status": 301,
+            "statusText": "Moved Permanently",
+            "headers": [ {
+              "name": "Location",
+              "value": "https://cyber.law.harvard.edu/"
+            } ]
+          }
+        }, {
+          "pageref": "page_1",
+          "request": {
+            "method": "GET",
+            "url": "https://cyber.law.harvard.edu/"
+          },
+          "response": {
+            "status": 200,
+            "statusText": "OK"
+            "content": {
+              "size": 37120,
+              "mimeType": "text/html",
+              "_raw": "<!DOCTYPE html><html><head><title>Berkman Klein Center for Internet and society</title></head><body>...</body></html>",
             }
-          }, {
-            "statusCode": 200,
-            "responseHeaders": "Content-Type:text/html",
-            "rawResults": "<!DOCTYPE html><html><head><title>Berkman Center for Internet and society</title></head><body>...</body></html>",
-            "request": {
-              "url": "https://cyber.law.harvard.edu/",
-              "requestHeaders": "Accept: text/html\r\nAccept-Language: zh-Hans,zh\r\nUser-Agent: Mozilla/5.0 AppleWebKit/537 Chrome/41.0",
-              "asn": "23650"
-            }
-          } ]
-        }
+          }
+        } ]
       }
     }
+
+#### HTTP response
+
+    HTTP/1.1 201 Created
+    Content-Type: application/json
+
+      {
+        "data": {
+          "type": "classifications",
+          "id": "1134",
+          "attributes": {
+            "status": "up",
+            "statusConfidence": 1.0
+          },
+          "relationships": {
+            "classifiers": {
+              "data": [
+                { "type": "StatusCodeClassifier", "id": "4096" },
+                { "type": "BlockPageClassifier", "id": "4097" }
+              ]
+            }
+          }
+        },
+        "included": [ {
+          "type": "StatusCodeClassifier",
+          "id": "4096",
+          "attributes": {
+            "status": "up",
+            "weight": 0.6
+          }
+        } , {
+          "type": "BlockPageClassifier",
+          "id": "4097",
+          "attributes": {
+            "status": "blocked",
+            "weight": 1.0
+          }
+        } ]
+      }
 
 Query for Classifiers
 ---------------------
