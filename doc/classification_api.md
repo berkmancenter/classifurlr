@@ -81,7 +81,7 @@ Each current and historic session should get its own page object in the pages ar
             },
             "headersSize": 77,
             "bodySize": 8548,
-            "_error": ""
+            "_errors": []
           },
           "cache": {},
           "timings": {
@@ -90,7 +90,8 @@ Each current and historic session should get its own page object in the pages ar
             "wait": 16.833000001497602,
             "receive": 1.789000001735996
           },
-          "serverIPAddress": "128.103.64.74"
+          "serverIPAddress": "128.103.64.74",
+          "_certificates": []
         } ]
       }
     }
@@ -171,15 +172,25 @@ Detailed info about the response.
 
 **cache**
 
-Info about cache usage.
+This object contains info about a request coming from browser cache. It can contain beforeRequest and afterRequest attributes.
+
+For more information, please see the HAR spec: http://www.softwareishard.com/blog/har-12-spec/#cache
 
 **timings**
 
-Detailed timing info about request/response round trip.
+This object describes various phases within request-response round trip. All times are specified in milliseconds. It contains attributes such as: connect, send, wait, and receive.
+
+For more information, please see the HAR spec: http://www.softwareishard.com/blog/har-12-spec/#timings
 
 **serverIPAddress**
 
 IP address of the server that was connected (result of DNS resolution).
+
+**_certificates**
+
+An array of PEM or DER-encoded certificates accepted during the request.
+
+This is a custom extension to the spec and begins with an underscore.
 
 #### request
 
@@ -275,55 +286,11 @@ Total number of bytes from the start of the HTTP response message until (and inc
 
 Size of the request body (POST data payload) in bytes.
 
-**timings**
+**_errors**
 
-This object describes various phases within request-response round trip. All times are specified in milliseconds.
+Any errors encountered on the physical, network, or transport layers during the request.
 
-Please follow the timings format in the HAR spec: http://www.softwareishard.com/blog/har-12-spec/#timings
-
-Possible attributes for the timings object include:
-
-* dns
-* connect
-* send
-* wait
-* receive
-* ssl
-
-**errorsEncountered**
-
-Any errors encountered during the request, separated by CRLF.
-
-**certificateChain**
-
-Certificates accepted during the request. If there are more than one certificate, separate them with an empty line (CRLF).
-
-
-**request**
-
-Data about the request original request to which this data is a response.
-
-#### response[x].request attributes
-
-**url**
-
-For each request, you can include the url requested. This is useful to classifiers to determine/follow redirects and other anomalies.
-
-If you are sending more than one response, it is strongly recommended that you include the url attribute in each request object (as well as matching responseHeaders in the related response object). This way, the classifiers can differentiate between, e.g., redirects, historic data, or unrelated requests.
-
-If the url attribute is **not** supplied in the request objects, the classifiers will be forced to operate on the first response/request pair only which may give you a less accurate classification.
-
-**timeout**
-
-The time, in seconds, after which the request will be canceled by the original machine.
-
-**requestHeaders**
-
-The HTTP headers sent as part of the original request. Each header should be separated by CRLF as defined by HTTP.
-
-**asn**
-
-The Autonomous System Number for the ISP to which the original requesting machine is connected.
+This is a custom extension to the spec and begins with an underscore.
 
 ### classification response attributes
 
