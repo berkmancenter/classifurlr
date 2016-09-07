@@ -101,26 +101,40 @@ Each current and historic session should get its own page object in the pages ar
     HTTP/1.1 200 OK
     Content-Type: application/json
 
-    {
-      "data": {
-        "type": "classifications",
-        "id": "1134",
-        "attributes": {
-          "status": "up",
-          "available": 1.0,
-          "blocked": 0.0,
-          "classifiers": [ {
-            "type": "StatusCodeClassifier",
-            "available": 1.0,
+
+      {
+        "data": {
+          "type": "classifications",
+          "id": "1134",
+          "attributes": {
+            "status": "up",
+            "statusConfidence": 1.0
+          },
+          "relationships": {
+            "classifiers": {
+              "data": [
+                { "type": "StatusCodeClassifier", "id": "4096" },
+                { "type": "BlockPageClassifier", "id": "4097" }
+              ]
+            }
+          }
+        },
+        "included": [ {
+          "type": "StatusCodeClassifier",
+          "id": "4096",
+          "attributes": {
+            "status": "up",
             "weight": 0.6
-          }, {
-            "type": "BlockPageClassifier",
-            "blocked": 0.0,
+          }
+        } , {
+          "type": "BlockPageClassifier",
+          "id": "4097",
+          "attributes": {
+            "status": "blocked",
             "weight": 1.0
-          } ]
-        }
+          }
+        } ]
       }
-    }
 
 ### Notable classification request attributes
 
@@ -300,27 +314,19 @@ The ID of the classification. Set by Classifurlr, it can be used to provide feed
 
 **status**
 
-The status of the request/response data as determined by the classifications. The status attribute is a simplified way to examine a classification as it is just a string and will be one of the following: up, down, blocked, or undetermined. It is based on an analysis of the available & blocked attributes.
+The status of the request/response data as determined by analyzing the results of individual classifiers. The status attribute is a simplified way to examine a classification as it is a string and will be "up", "down".
 
-**available**
+**statusConfidence**
 
-Confidence, as determined by weighting the results from individual classifiers, represented as a number from 0 to 1, that the given page is available to users connecting via the given ASN . A low confidence of being available does not imply that the page is definitely not available.
-
-**unavailable**
-
-Confidence, as determined by weighting the results from individual classifiers, represented as a number from 0 to 1, that the given page is *not* available to users connecting via the given ASN . A low confidence of being unavailable does not imply that the page is definitely available. For example, if the request had timed out, both available and unavailable will be 0 and status will likely be undetermined.
-
-**blocked**
-
-Confidence, as determined by weighting the results from individual classifiers, represented as a number from 0 to 1, that the given page is not available to users connecting via the given ASN due to *intentional efforts* by another party, e.g., the content is a known block page. A low confidence of being blocked does not imply that the page is definitely available.
+Confidence, as determined by classifying test data, represented as a number from 0 to 1, that the value given for status is accurate. 
 
 **classifiers**
 
 An array of results, one from each classifier queried, which help determine the final classification response.
 
-An individual classifier result will have a name and a weight. These are set by Classifurlr and used to classify a web response. Each classifier result will also have one or more attributes giving their individual confidence of the status of the response, e.g., available, unavailable, and/or blocked.
+An individual classifier result will have a status and a weight. The data appears in the "included" section of the response. These are set by Classifurlr and used to classify a web response. 
 
-Classifurlr uses the individual weight and confidences together to determine the overall confidences for the classification. 
+Classifurlr uses the individual statusus and weights together to determine the overall status and confidence for the classification. 
 
 ### Redirect Example
 
