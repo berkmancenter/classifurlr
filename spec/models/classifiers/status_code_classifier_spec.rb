@@ -22,8 +22,7 @@ RSpec.describe StatusCodeClassifier do
   describe 'classify' do
     context 'transaction_data' do
       let ( :transaction_data ) {
-        { 'attributes' => {
-        } }
+        { 'log' => { } }
       }
 
       skip ( 'should require url in transaction_data' ) {
@@ -33,11 +32,7 @@ RSpec.describe StatusCodeClassifier do
 
     context '200 response' do
       let ( :transaction_data ) {
-        { 'attributes' => {
-            'responses' => [ {
-              'statusCode' => 200
-            } ]
-        } }
+        { 'log' => { 'entries' => [ { 'response' => { 'status' => 200 } } ] } }
       }
 
       it {

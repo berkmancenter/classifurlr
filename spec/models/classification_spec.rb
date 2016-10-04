@@ -1,11 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Classification do
-  let ( :transaction_data ) {
+  let ( :har_data ) {
     {
-      'attributes' => {
-        'responses' => [ {
-          'statusCode' => 200
+      'log' => {
+        'entries' => [ {
+          'response' => {
+            'status' => 200
+          }
         } ]
       }
     }
@@ -21,8 +23,8 @@ RSpec.describe Classification do
     expect( Classification.available_threshold ).to eq( 0.8 )
   }
 
-  it ( 'stores transaction_data' ) {
-    expect( Classification.new( transaction_data: transaction_data ).transaction_data ).to eq( transaction_data.as_json )
+  it ( 'stores har' ) {
+    expect( Classification.new( transaction_data: har_data ).transaction_data ).to eq( har_data.as_json )
   }
 
   it ( 'stores classifiers' ) {
@@ -36,7 +38,7 @@ RSpec.describe Classification do
 
   it ( 'can classify' ) {
     c = Classification.new
-    c.classifiers << StatusCodeClassifier.classify( transaction_data )
+    c.classifiers << StatusCodeClassifier.classify( har_data )
     c.classify
     
     expect( c.available ).to eq( 1.0 )
@@ -47,7 +49,7 @@ RSpec.describe Classification do
 
   it ( 'returns jsonapi_hash' ) {
     c = Classification.new
-    c.classifiers << StatusCodeClassifier.classify( transaction_data )
+    c.classifiers << StatusCodeClassifier.classify( har_data )
     c.classify
     jsonapi_hash = c.as_jsonapi
 

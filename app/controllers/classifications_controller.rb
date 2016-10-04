@@ -7,9 +7,10 @@ class ClassificationsController < ApplicationController
     @classifaction = Classification.find params[ :id ]
   end
 
-  # create a Classification with the supplied transaction_data
+  # create a Classification with the supplied har
   def create
-    @classifaction = Classification.new transaction_data: params[ :data ]
+    Rails.logger.debug "[ClassificationsController.create] params.class: #{params.class}, params: #{params}"
+    @classifaction = Classification.new transaction_data: params
     @classifaction.classifiers << StatusCodeClassifier.classify( @classifaction.transaction_data )
     @classifaction.classify
 
