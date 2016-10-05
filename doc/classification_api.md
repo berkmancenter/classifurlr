@@ -129,7 +129,7 @@ Each current and historic session should get its own page object in the pages ar
           "type": "BlockPageClassifier",
           "id": "4097",
           "attributes": {
-            "status": "blocked",
+            "status": "up",
             "weight": 1.0
           }
         } ]
@@ -408,7 +408,7 @@ Only pertinent attributes are shown.
           "type": "BlockPageClassifier",
           "id": "4097",
           "attributes": {
-            "status": "blocked",
+            "status": "up",
             "weight": 1.0
           }
         } ]
