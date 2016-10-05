@@ -4,16 +4,19 @@ class StatusCodeClassifier < Classifier
   end
 
   def self.classify( transaction_data )
-    c = StatusCodeClassifier.new
+    c = StatusCodeClassifier.new available: 0.0
 
-    transaction_data[ 'log' ][ 'entries' ].each { |entry|
-      case entry[ 'response'][ 'status' ].to_i
-      when 200
-        c.available = 1.0
-      end
+    begin
+      transaction_data[ 'log' ][ 'entries' ].each { |entry|
+        if entry[ 'response' ][ 'status' ].to_s[0] == '2'
+          c.available = 1.0
+        end
 
-      break if c.available.present?
-    }
+        break if c.available.present?
+      }
+    rescue Exception => e
+      Rails.logger.debug "[StatusCodeClassifier.classify] #{e.to_s}"
+    end
 
     c
   end

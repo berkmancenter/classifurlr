@@ -17,7 +17,7 @@ class Classification < ActiveRecord::Base
         'type' => 'classifications',
         'attributes' => {
           'status' => status,
-          'available' => available
+          'statusConfidence' => available
         }
       }
     }

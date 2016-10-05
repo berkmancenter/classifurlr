@@ -57,6 +57,10 @@ RSpec.describe Classification do
     expect( jsonapi_hash[ 'data' ][ 'type' ] ).to eq( 'classifications' )
     expect( jsonapi_hash[ 'data' ][ 'attributes' ] ).not_to be_nil
     expect( jsonapi_hash[ 'data' ][ 'attributes' ][ 'status' ] ).to eq( 'up' )
+
+    # availablen attribute was renamed
+    expect( jsonapi_hash[ 'data' ][ 'attributes' ][ 'available' ] ).to be_nil
+    expect( jsonapi_hash[ 'data' ][ 'attributes' ][ 'statusConfidence' ] ).to eq( 1.0 )
   }
 
 end

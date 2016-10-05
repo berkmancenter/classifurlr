@@ -20,16 +20,6 @@ RSpec.describe StatusCodeClassifier do
   }
 
   describe 'classify' do
-    context 'transaction_data' do
-      let ( :transaction_data ) {
-        { 'log' => { } }
-      }
-
-      skip ( 'should require url in transaction_data' ) {
-        expect( StatusCodeClassifier.classify( transaction_data ) ).to_not be_valid
-      }
-    end
-
     context '200 response' do
       let ( :transaction_data ) {
         { 'log' => { 'entries' => [ { 'response' => { 'status' => 200 } } ] } }
@@ -37,10 +27,69 @@ RSpec.describe StatusCodeClassifier do
 
       it {
         c = StatusCodeClassifier.classify( transaction_data )
-
-        expect( c.name ).to eq( 'status_code_classifier' )
-        expect( c.weight ).to eq( 0.8 )
         expect( c.available ).to eq( 1.0 )
+      }
+    end
+
+    context '204 response' do
+      let ( :transaction_data ) {
+        { 'log' => { 'entries' => [ { 'response' => { 'status' => 204 } } ] } }
+      }
+
+      it {
+        c = StatusCodeClassifier.classify( transaction_data )
+        expect( c.available ).to eq( 1.0 )
+      }
+    end
+
+    context '400 response' do
+      let ( :transaction_data ) {
+        { 'log' => { 'entries' => [ { 'response' => { 'status' => 400 } } ] } }
+      }
+
+      it {
+        c = StatusCodeClassifier.classify( transaction_data )
+        expect( c.available ).to eq( 0.0 )
+      }
+    end
+
+    context '404 response' do
+      let ( :transaction_data ) {
+        { 'log' => { 'entries' => [ { 'response' => { 'status' => 404 } } ] } }
+      }
+
+      it {
+        c = StatusCodeClassifier.classify( transaction_data )
+        expect( c.available ).to eq( 0.0 )
+      }
+    end
+
+    context '500 response' do
+      let ( :transaction_data ) {
+        { 'log' => { 'entries' => [ { 'response' => { 'status' => 500 } } ] } }
+      }
+
+      it {
+        c = StatusCodeClassifier.classify( transaction_data )
+        expect( c.available ).to eq( 0.0 )
+      }
+    end
+
+    context 'missing status in response' do
+      let ( :transaction_data ) {
+        { 'log' => { } }
+      }
+
+      it {
+        c = StatusCodeClassifier.classify( transaction_data )
+        expect( c.available ).to eq( 0.0 )
+      }
+    end
+
+    context 'nil transaction_data' do
+      it {
+        c = StatusCodeClassifier.classify( nil )
+        expect( c.available ).to eq( 0.0 )
       }
     end
   end
