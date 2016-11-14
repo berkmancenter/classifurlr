@@ -3,7 +3,7 @@ classifurlr
 
 Given request and response data, classifurlr attempts to determine likelihood that page is available vs. down or blocked.
 
-You can read the full API specification on our wiki: [[Classification API]]
+You can read the full API specification on our wiki: [Classification API](https://github.com/berkmancenter/classifurlr/wiki/Classification-API)
 
 ruby version
 ------------
